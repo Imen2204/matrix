@@ -15,8 +15,9 @@ Multiplication avec matrices transposées.
 
 ### Résolution de Systèmes Linéaires
 
-Méthodes directes : méthodes d'élimination de Gauss, décomposition LU, et plus.
-Méthodes itératives : méthode de Jacobi, méthode de Gauss-Seidel.
+Méthodes directes : Méthodes d'élimination de Gauss, décomposition LU, élimination de Gauss-Jordan, élimination de Gauss avec pivotage partiel et Cholesky.
+
+Méthodes itératives : Méthode de Jacobi, méthode de Gauss-Seidel.
 
 ### Résolution de Systèmes Linéaires Triangulaires
 
