@@ -46,7 +46,7 @@ Backend : Flask (Python)
 
 Frontend : HTML, CSS, JavaScript
 
-# Installation et Exécution
+# Installation
 
 Pour installer et exécuter l'application localement, suivez ces étapes :
 
