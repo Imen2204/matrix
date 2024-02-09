@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Multiplication</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4">Matrix Multiplication</h1>
+
+        <form action="/multiply" method="post" id="matrixForm">
+            <div class="form-group row">
+                <label for="rows" class="col-sm-2 col-form-label">Number of Rows:</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="rows" name="rows" required>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="columns" class="col-sm-2 col-form-label">Number of Columns:</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="columns" name="columns" required>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <p>Enter Matrix A:</p>
+                <div id="matrixA"></div>
+            </div>
+
+            <div>
+                <p>Enter Matrix B:</p>
+                <div id="matrixB"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Multiply Matrices</button>
+        </form>
+    </div>
+
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        // Function to dynamically create matrix input fields
+        function createMatrixInput(matrixId, rows, columns) {
+            const matrixDiv = document.getElementById(matrixId);
+            matrixDiv.innerHTML = ""; // Clear existing content
+
+            for (let i = 0; i < rows; i++) {
+                const rowDiv = document.createElement("div");
+                rowDiv.classList.add("form-row", "mb-2");
+
+                for (let j = 0; j < columns; j++) {
+                    const colDiv = document.createElement("div");
+                    colDiv.classList.add("col");
+
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.classList.add("form-control");
+                    input.name = `${matrixId}[${i}][${j}]`;
+                    input.required = true;
+
+                    colDiv.appendChild(input);
+                    rowDiv.appendChild(colDiv);
+                }
+
+                matrixDiv.appendChild(rowDiv);
+            }
+        }
+
+        // Event listener for changes in the number of rows and columns
+        document.getElementById("rows").addEventListener("input", updateMatrices);
+        document.getElementById("columns").addEventListener("input", updateMatrices);
+
+        // Function to update matrices based on user input
+        function updateMatrices() {
+            const rowsA = parseInt(document.getElementById("rows").value);
+            const columnsA = parseInt(document.getElementById("columns").value);
+
+            createMatrixInput("matrixA", rowsA, columnsA);
+
+            const rowsB = parseInt(document.getElementById("columns").value);
+            const columnsB = parseInt(document.getElementById("rows").value);
+
+            createMatrixInput("matrixB", rowsB, columnsB);
+        }
+
+        // Initialize matrices based on default values
+        updateMatrices();
+    </script>
+</body>
+</html>

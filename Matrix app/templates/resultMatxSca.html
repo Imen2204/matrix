@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Multiplication Result</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Matrix Multiplication Result</h2>
+
+    <div class="alert alert-success" role="alert">
+        <strong>Success!</strong> The result of matrix multiplication is:
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered" id="resultTable"></table>
+    </div>
+
+    <br>
+    <a href="/">Back to Menu</a>
+</div>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- Your additional script -->
+<script>
+    // Assuming 'resultData' is a JavaScript variable containing the result matrix
+    var resultData = /* Insert your result matrix here as a JavaScript array */;
+
+    var resultTable = document.getElementById('resultTable');
+
+    // Loop through the resultData and populate the table
+    resultData.forEach(function(row) {
+        var tr = document.createElement('tr');
+        row.forEach(function(value) {
+            var td = document.createElement('td');
+            td.textContent = value;
+            tr.appendChild(td);
+        });
+        resultTable.appendChild(tr);
+    });
+</script>
+
+</body>
+</html>

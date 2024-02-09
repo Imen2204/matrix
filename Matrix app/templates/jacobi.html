@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacobi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            /* Light background color */
+        }
+
+        .container {
+            background-color: #ffffff;
+            /* White background color */
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #212529;
+            /* Dark color for heading text */
+        }
+
+        .form-group p {
+            color: #212529;
+            /* Dark color for paragraph text */
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            /* Primary button color */
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            /* Darker color on hover */
+            border-color: #0056b3;
+        }
+
+        .mt-2 {
+            margin-top: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+        .mb-4 {
+            text-align: center;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            /* Red color for error messages */
+        }
+
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            margin-top: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+        }
+
+        #matrixAInputs {
+            margin-top: 20px;
+        }
+
+  
+
+        #mValue,
+        #result {
+            margin-top: 30px;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <header>
+            <h1 class="mb-4">Jacobi</h1>
+        </header>
+
+        <main>
+            <form id="gsForm" action="/solvejacobi" method="POST">
+                <div class="form-group">
+                    <label for="matrixSize">Entrez la dimension du matrice (n):</label>
+                    <input type="number" class="form-control" id="matrixSize" name="matrixSize" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="vectorSize">Entrez la dimension du vecteur b: </label>
+                    <input type="number" class="form-control" id="vectorSize" name="vectorSize" required>
+                </div>
+
+                <div class="form-group">
+                    <p>Entrez les éléments de la matrice:</p>
+                    <div id="matrixAInputs" class="mb-3"></div>
+                </div>
+
+                <div class="form-group">
+                    <p>Entrez les éléments du vecteur b:</p>
+                    <div id="vectorBInputs" class="mb-3"></div>
+                </div>
+           
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="iterationsCheckbox" name="iterationsCheckbox" onclick="toggleIterations()">
+                        <label class="form-check-label" for="iterationsCheckbox">Spécifier les itérations</label>
+                    </div>
+                    <label for="maxIterations">Itérations maximales:</label>
+                    <input type="number" class="form-control" id="maxIterations" name="maxIterations" value="11" disabled>
+                </div>
+                <div class="d-flex justify-content-center mb-2">
+                    <button type="button" id="generateButton" class="btn btn-primary" style="width: 150px;">Générer</button>
+                    <button type="submit" class="btn btn-success ml-2" style="width: 150px;">Résoudre</button>
+                </div>
+            </form>
+
+            <div id="result" class="mt-4">
+                <!-- Result will be displayed here -->
+            </div>
+        </main>
+
+        <footer>
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+            <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('generateButton').addEventListener('click', function () {
+            const matrixSize = parseInt(document.getElementById('matrixSize').value);
+            const vectorSize = parseInt(document.getElementById('vectorSize').value);
+            const matrixAInputs = document.getElementById('matrixAInputs');
+            const vectorBInputs = document.getElementById('vectorBInputs');
+
+            matrixAInputs.innerHTML = '';
+            vectorBInputs.innerHTML = '';
+
+            for (let i = 1; i <= matrixSize; i++) {
+                const rowDivA = document.createElement('div');
+                rowDivA.className = 'form-row mb-2';
+
+                for (let j = 1; j <= matrixSize; j++) {
+                    const colDivA = document.createElement('div');
+                    colDivA.className = 'col';
+
+                    const inputA = document.createElement('input');
+                    inputA.type = 'number';
+                    inputA.className = 'form-control';
+                    inputA.name = `matrix[${i}][${j}]`;
+                    inputA.placeholder = `a[${i}][${j}]`;
+                    inputA.required = true;
+
+                    colDivA.appendChild(inputA);
+                    rowDivA.appendChild(colDivA);
+                }
+
+                matrixAInputs.appendChild(rowDivA);
+            }
+
+            for (let i = 1; i <= vectorSize; i++) {
+                const colDivB = document.createElement('div');
+                colDivB.className = 'col';
+
+                const inputB = document.createElement('input');
+                inputB.type = 'number';
+                inputB.className = 'form-control';
+                inputB.name = `vector[${i}]`;
+                inputB.placeholder = `x[${i}]`;
+                inputB.required = true;
+
+                colDivB.appendChild(inputB);
+                vectorBInputs.appendChild(colDivB);
+            }
+
+            // Disable Max Iterations input on generate
+            const iterationsCheckbox = document.getElementById('iterationsCheckbox');
+            const iterationsInput = document.getElementById('maxIterations');
+            iterationsInput.disabled = !iterationsCheckbox.checked;
+
+            document.getElementById('result').innerHTML = ''; // Clear previous result
+        });
+
+        document.getElementById('gsForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(document.getElementById('gsForm'));
+
+            // Disable Max Iterations input if the checkbox is not checked
+            const iterationsCheckbox = document.getElementById('iterationsCheckbox');
+            const iterationsInput = document.getElementById('maxIterations');
+            iterationsInput.disabled = !iterationsCheckbox.checked;
+
+            fetch('/solvejacobi', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Server response:', data);
+
+                const resultContainer = document.getElementById('result');
+                resultContainer.innerHTML = '';
+
+                if (data.error) {
+                    const errorParagraph = document.createElement('p');
+                    errorParagraph.className = 'text-danger';
+                    errorParagraph.innerText = `Error: ${data.error}`;
+                    resultContainer.appendChild(errorParagraph);
+                } else if (data.msg !== undefined) {
+                    const msgParagraph = document.createElement('p');
+
+                    resultContainer.appendChild(msgParagraph);
+                }
+
+                if (data.matrix_J !== undefined && data.msg !== undefined) {
+                    // Display matrix_J and msg
+                    const matrixGContainer = document.createElement('div');
+                    matrixGContainer.className = 'col-12 mt-4';
+
+                    const matrixGHeader = document.createElement('h3');
+                    matrixGHeader.innerText = 'Matrice J';
+                    matrixGContainer.appendChild(matrixGHeader);
+
+                    const matrixGTable = document.createElement('table');
+                    matrixGTable.className = 'table';
+
+                    for (let i = 0; i < data.matrix_J.length; i++) {
+                        const row = document.createElement('tr');
+                        for (let j = 0; j < data.matrix_J[i].length; j++) {
+                            const cell = document.createElement('td');
+                            cell.innerText = data.matrix_J[i][j].toFixed(5);
+                            row.appendChild(cell);
+                        }
+                        matrixGTable.appendChild(row);
+                    }
+
+                    matrixGContainer.appendChild(matrixGTable);
+
+                    resultContainer.appendChild(matrixGContainer);
+
+                    const msgParagraph = document.createElement('h5');
+                    msgParagraph.innerText = ` ${data.msg}`;
+                    resultContainer.appendChild(msgParagraph);
+                }
+
+                if (data.result !== undefined && data.result !== null) {
+                    // Display the result if available
+                    const resultHeader = document.createElement('h3');
+                    resultHeader.innerText = 'Solution';
+                    resultContainer.appendChild(resultHeader);
+
+                    const resultTable = document.createElement('table');
+                    resultTable.className = 'table';
+
+                    const resultRow = document.createElement('tr');
+                    for (let i = 0; i < data.result.length; i++) {
+                        const resultCell = document.createElement('td');
+                        resultCell.innerText = `${data.result[i].toFixed(5)}`;
+                        resultRow.appendChild(resultCell);
+                    }
+
+                    resultTable.appendChild(resultRow);
+                    resultContainer.appendChild(resultTable);
+                } else {
+                    const resultParagraph = document.createElement('p');
+                    resultParagraph.innerText = 'No result available.';
+                    resultContainer.appendChild(resultParagraph);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+
+                const resultContainer = document.getElementById('result');
+
+            });
+        });
+
+        function toggleIterations() {
+            var iterationsInput = document.getElementById('maxIterations');
+            iterationsInput.disabled = !iterationsInput.disabled;
+        }
+
+        document.getElementById('generateButton').addEventListener('click', function () {
+            const matrixSize = parseInt(document.getElementById('matrixSize').value);
+            const vectorSize = parseInt(document.getElementById('vectorSize').value);
+            const matrixAInputs = document.getElementById('matrixAInputs');
+            const vectorBInputs = document.getElementById('vectorBInputs');
+
+            matrixAInputs.innerHTML = '';
+            vectorBInputs.innerHTML = '';
+
+            for (let i = 1; i <= matrixSize; i++) {
+                const rowDivA = document.createElement('div');
+                rowDivA.className = 'form-row mb-2';
+
+                for (let j = 1; j <= matrixSize; j++) {
+                    const colDivA = document.createElement('div');
+                    colDivA.className = 'col';
+
+                    const inputA = document.createElement('input');
+                    inputA.type = 'number';
+                    inputA.className = 'form-control';
+                    inputA.name = `matrix[${i}][${j}]`;
+                    inputA.placeholder = `a[${i}][${j}]`;
+                    inputA.required = true;
+
+                    colDivA.appendChild(inputA);
+                    rowDivA.appendChild(colDivA);
+                }
+
+                matrixAInputs.appendChild(rowDivA);
+            }
+                        for (let i = 1; i <= vectorSize; i++) {
+                            const colDivB = document.createElement('div');
+                            colDivB.className = 'col';
+
+                            const inputB = document.createElement('input');
+                            inputB.type = 'number';
+                            inputB.className = 'form-control';
+                            inputB.name = `vector[${i}]`;
+                            inputB.placeholder = `x[${i}]`;
+                            inputB.required = true;
+
+                            colDivB.appendChild(inputB);
+                            vectorBInputs.appendChild(colDivB);
+                        }
+
+                        // Disable Max Iterations input on generate
+                        const iterationsCheckbox = document.getElementById('iterationsCheckbox');
+                        const iterationsInput = document.getElementById('maxIterations');
+                        iterationsInput.disabled = !iterationsCheckbox.checked;
+
+                        document.getElementById('result').innerHTML = ''; // Clear previous result
+                    });
+                });
+            </script>
+            
+            
+        </footer>
+    </div>
+</body>
+</html>

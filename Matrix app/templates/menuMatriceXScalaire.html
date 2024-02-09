@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear System Solver</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mt-4">Linear System Solver</h2>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="rows">Enter the number of rows:</label>
+            <input type="number" class="form-control" id="rows" name="rows" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cols">Enter the number of columns:</label>
+            <input type="number" class="form-control" id="cols" name="cols" required>
+        </div>
+
+        <p>Enter the lower triangular matrix elements:</p>
+        <div class="form-group">
+            <table id="matrixInput" class="table">
+            </table>
+        </div>
+
+        <div class="form-group">
+            <label for="vector_b">Enter the vector b elements (separate elements by commas):</label>
+            <input type="text" class="form-control" name="vector_b" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Solve</button>
+    </form>
+
+    {% if result %}
+        <h2 class="mt-4">Result:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+</div>
+
+<!-- Bootstrap JS and Popper.js CDN -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    function createMatrixInput(rows, cols) {
+        let matrixInput = document.getElementById("matrixInput");
+        matrixInput.innerHTML = "";
+
+        for (let i = 0; i < rows; i++) {
+            let row = matrixInput.insertRow(i);
+            for (let j = 0; j < cols; j++) {
+                let cell = row.insertCell(j);
+                let input = document.createElement("input");
+                input.type = "number";
+                input.className = "form-control";
+                input.name = "matrixElement";
+                input.required = true;
+                cell.appendChild(input);
+            }
+        }
+    }
+
+    document.getElementById("rows").addEventListener("change", function () {
+        let rows = document.getElementById("rows").value;
+        let cols = document.getElementById("cols").value;
+        createMatrixInput(rows, cols);
+    });
+
+    document.getElementById("cols").addEventListener("change", function () {
+        let rows = document.getElementById("rows").value;
+        let cols = document.getElementById("cols").value;
+        createMatrixInput(rows, cols);
+    });
+</script>
+
+</body>
+</html>

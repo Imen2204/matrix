@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Transformations</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Matrix Transformations</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#gauss">Gauss</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#gauss_partial_pivoting">Gauss with Partial Pivoting</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#gaussj">Gauss-Jordan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#lu">LU Decomposition</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#cholesky_decomposition">Cholesky Decomposition</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Les méthodes de résolution directe</h1>
+
+        <div class="btn-group mt-3" role="group">
+            <button type="button" class="btn btn-primary" onclick="applyGauss()">Élimination de Gauss</button>
+            <button type="button" class="btn btn-primary" onclick="applyPartialPivoting()">Élimination de Gauss avec pivotage partiel</button>
+            <button type="button" class="btn btn-primary" onclick="applyGaussJordan()">Élimination de Gauss-Jordan</button>
+            <button type="button" class="btn btn-primary" onclick="applyLuDecomposition()">Décomposition LU</button>
+            <button type="button" class="btn btn-primary" onclick="applyCholeskyDecomposition()">Décomposition de Cholesky</button>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function applyGauss() {
+            // Redirect to the Gauss transformation page or implement your logic
+            window.location.href = "/gauss";
+        }
+
+        function applyPartialPivoting() {
+            // Redirect to the Gauss with Partial Pivoting page or implement your logic
+            window.location.href = "/gaussbivpart";
+        }
+
+        function applyGaussJordan() {
+            // Redirect to the Gauss-Jordan transformation page or implement your logic
+            window.location.href = "/gaussj";
+        }
+
+        function applyLuDecomposition() {
+            // Redirect to the LU Decomposition page or implement your logic
+            window.location.href = "/lu";
+        }
+
+        function applyCholeskyDecomposition() {
+            // Redirect to the Cholesky Decomposition page or implement your logic
+            window.location.href = "/cholesky";
+        }
+    </script>
+</body>
+</html>

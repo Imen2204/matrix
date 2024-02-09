@@ -1,0 +1,95 @@
+<script>
+function applyGauss() {
+    const form = document.getElementById("matrixForm");
+    const formData = new FormData(form);
+    const matrixType = document.querySelector('input[name="matrixType"]:checked');
+    formData.set('matrixType', matrixType ? matrixType.value : 'dense');
+
+    fetch('/appgauss', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultDiv = document.getElementById("result");
+        const mValueDiv = document.getElementById("mValue");
+        const xValueDiv = document.getElementById("xValue");
+        const mDisplaySpan = document.getElementById("mDisplay");
+        const xDisplaySpan = document.getElementById("xDisplay");
+
+        if (data.error) {
+            resultDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        } else {
+            let result_html = '<div><div class="row">';
+
+            if (matrixType.value === 'bande') {
+                const m = find_bandwidth(data.processed_matrix);
+                result_html += `<div><h3>Valeur de m: ${m}</h3></div>`;
+            }
+
+            // Display the processed matrix
+            result_html += '<div class="col-12">';
+            result_html += '<h3>Résultat: Matrice avec second membre après application de Gauss avec pivotage partiel</h3>';
+            result_html += '<table class="table">';
+
+            for (let i = 0; i < data.processed_matrix.length; i++) {
+                result_html += '<tr>';
+                for (let j = 0; j < data.processed_matrix[i].length; j++) {
+                    result_html += `<td>${data.processed_matrix[i][j].toFixed(5)}</td>`;
+                }
+                result_html += '</tr>';
+            }
+
+            result_html += '</table>';
+            result_html += '</div>';
+
+            // Display the solution
+            result_html += '<div class="col-12">';
+            result_html += '<h3>Solution:</h3>';
+            result_html += '<table class="table">';
+            result_html += '<tr>';
+
+            for (let i = 0; i < data.x.length; i++) {
+                result_html += `<td>${data.x[i].toFixed(5)}</td>`;
+            }
+
+            result_html += '</tr>';
+            result_html += '</table>';
+            result_html += '</div>';
+
+            result_html += '</div></div>';
+
+            // Set the result HTML
+            resultDiv.innerHTML = result_html;
+
+            // Display the value of m for banded matrices
+            mValueDiv.style.display = matrixType.value === 'bande' ? 'block' : 'none';
+            mDisplaySpan.textContent = data.m_value;
+
+            // Display the value of x in a table with label
+            if (data.x) {
+                xValueDiv.innerHTML = ''; // Clear existing content
+                xValueDiv.style.display = 'block';
+
+                const label = document.createElement('h5');
+                label.innerHTML = '<label for="xInput" class="col-sm-2 col-form-label">Solution (x):</label>';
+                xValueDiv.appendChild(label);
+
+                const table = document.createElement('table');
+                table.classList.add('table');
+                const row = document.createElement('tr');
+                for (let i = 0; i < data.x.length; i++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = data.x[i].toFixed(5);
+                    row.appendChild(cell);
+                }
+                table.appendChild(row);
+                xValueDiv.appendChild(table);
+            } else {
+                xValueDiv.style.display = 'none';
+            }
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>

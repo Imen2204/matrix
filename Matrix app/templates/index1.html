@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #content-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #menu-container {
+      width: 250px;
+      background-color: #343a40;
+      color: #ffffff;
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    #menu {
+      padding: 10px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #header {
+      background-color: #212529;
+      color: #61dafb;
+      padding: 5px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      border-bottom: 2px solid #495057;
+    }
+
+    #menu button {
+      background-color: #495057;
+      color: #ffffff;
+      border: none;
+      padding: 8px 12px;
+      margin: 5px;
+      cursor: pointer;
+      width: calc(100% - 10px);
+      text-align: left;
+      position: relative;
+      transition: background-color 0.3s ease;
+      font-size: 0.9rem;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #menu button span {
+      margin-left: 16px;
+    }
+
+    #menu button:hover {
+      background-color: #1e1f24;
+    }
+
+    #menu button::before {
+      content: '\25C1';
+      font-size: 0.8rem;
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+      transition: .25s transform ease;
+    }
+
+    #menu button.rotate::before {
+      transform: translateY(-50%) rotate(270deg);
+    }
+
+    #menu ul {
+      list-style: none;
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .drawer {
+      display: none;
+      padding: 8px;
+      border-left: 2px solid #61dafb;
+    }
+
+    .drawer a {
+      display: block;
+      color: #343a40;
+      padding: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      border-radius: 5px;
+      border: 1px solid #4fa3d1;
+      margin-bottom: 3px;
+      background-color: #61dafb;
+      font-size: 0.8rem;
+    }
+
+    .drawer a:hover {
+      background-color: #4fa3d1;
+      color: #ffffff;
+    }
+
+    #iframe-container {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #content-iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #61dafb;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: #1e1f24;
+    }
+ 
+    
+  </style>
+</head>
+
+<body>
+
+  <div id="content-container">
+    <div id="menu-container">
+      <div id="header">
+        <h2>Matrix</h2>
+      </div>
+
+      <div id="menu">
+        <button onclick="toggleDrawer('drawer1', this)" id="drawerBtn1"><span>Multiplication matricielle</span></button>
+        <ul id="drawer1" class="drawer">
+          <li>
+            <button onclick="toggleDrawer('Matrix * Vector', this)" id="M*V_Btn2">
+              <span>Matrice * Vecteur</span>
+            </button>
+            <ul id="Matrix * Vector" class="drawer">
+              <li><a onclick="openPage('/densevecteur')">Matrice Dense</a></li>
+              <li><a onclick="openPage('/infVecteur')">Matrice triangulaire inférieure Dense</a></li>
+              <li><a onclick="openPage('/supvecteur')">Matrice triangulaire supérieur Dense</a></li>
+              <li><a onclick="openPage('/demiinfvecteur')">Matrice triangulaire inférieure demi bande </a></li>
+              <li><a onclick="openPage('/demisupvecteur')">Matrice triangulaire supérieur demi bande </a></li>
+            </ul>
+            <button onclick="toggleDrawer('Matrix * Matrix', this)" id="M*M_Btn3">
+              <span>Matrice * Matrice</span>
+            </button>
+            <ul id="Matrix * Matrix" class="drawer">
+              <li><a onclick="openPage('/bandedemibandinf')">Matrice bande de largeur totale 2m + 1 × Matrice demi-bande inférieure de largeur m + 1</a></li>
+              <li><a onclick="openPage('/bandinfsup')">Matrice demi-bande inférieure de largeur s + 1 × Matrice demi-bande supérieure de largeur r + 1</a></li>
+              <li><a onclick="openPage('/bandeinverse')">Matrice bande de largeur totale 2m + 1 × Matrice inverse</a></li>
+              <li><a onclick="openPage('/bandetranspose')">Matrice bande de largeur totale 2m + 1 × Matrice transposée </a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <button onclick="toggleDrawer('drawer2', this)" id="drawerBtn2"><span>Résolution d'un  Systèmes Linéaire triangulaire</span></button>
+        <ul id="drawer2" class="drawer">
+          <li><a onclick="openPage('/indextriangInf')">Matrice inférieure dense</a></li>
+          <li><a onclick="openPage('/resodemiinf')">Matrice inférieure demi-bande</a></li>
+          <li><a onclick="openPage('/indextriangSup')">Matrice supérieure dense</a></li>
+          <li><a onclick="openPage('/resodemisup')">Matrice supérieure demi-bande </a></li>
+        </ul>
+
+        <button onclick="toggleDrawer('drawer3', this)" id="drawerBtn3"><span>Résolution d'un  Systèmes Linéaire</span></button>
+        <ul id="drawer3" class="drawer">
+          <li>
+            <button onclick="toggleDrawer('Direct', this)" id="D_Btn3">
+              <span> Méthodes Directs</span>
+            </button>
+            <ul id="Direct" class="drawer">
+              <li><a onclick="openPage('/gauss')">Méthode d'elimination de Gauss</a></li>
+              <li><a onclick="openPage('/gaussbivpart')">Méthode d'elimination de Gauss avec pivotage partiel</a></li>
+              <li><a onclick="openPage('/gaussj')">Méthode d'elimination de Gauss Jordan</a></li>
+              <li><a onclick="openPage('/lu')">Méthode de décomposition LU </a></li>
+              <li><a onclick="openPage('/cholesky')">Méthode de décomposition Cholesky</a></li>
+            </ul>
+            <button onclick="toggleDrawer('Itérative', this)" id="I_Btn5">
+              <span> Méthodes Itératives</span>
+            </button>
+            <ul id="Itérative" class="drawer">
+              <li><a onclick="openPage('/jacobi')">Méthode de Jacobi</a></li>
+              <li><a onclick="openPage('/gs')">Méthode de Gauss Seidel</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="project-info-container" class="container" style="display: flex; justify-content: center; align-items: center; width: 100%; margin: auto; height: 80vh;">
+      
+      <div class="card" style="width: 80%; margin: auto; box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5); padding: 20px;">
+        <div class="card-body">
+          <h1 class="card-title">Informations sur le projet</h1>
+          <p class="card-text"><strong>Réalisé par:</strong> Imen Abdelkader, Mohamed Amine Dammak et Eya Hassairi</p>
+          <p class="card-text"><strong>Superviseur:</strong> Dr. Sirine MARRAKCHI</p>
+          <p class="card-text"><strong>Matière:</strong> Algorithmes Numériques</p>
+          <p class="card-text"><strong>Filière:</strong> Cycle d'ingénieur : Ingénierie de données</p>
+          <p class="card-text"><strong>Etablissement:</strong> Faculté des Sciences de Sfax</p>
+          <p class="card-text"><strong>Département:</strong> Informatique et Communications</p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="iframe-container">
+      <!-- This is where the content will be loaded -->
+      <iframe id="content-iframe" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    function toggleDrawer(drawerId, button) {
+      var drawer = document.getElementById(drawerId);
+      drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+
+      button.classList.toggle('rotate', drawer.style.display !== 'none');
+    }
+
+    function openPage(pageUrl) {
+      console.log('Opening page:', pageUrl);
+      document.getElementById('content-iframe').src = pageUrl;
+      // Hide the project information
+  document.getElementById('project-info-container').style.display = 'none';
+    }
+
+    // Add this event listener to stop propagation on inner links
+    document.querySelectorAll('.drawer a').forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        event.stopPropagation();
+      });
+    });
+  </script>
+</body>
+
+</html>

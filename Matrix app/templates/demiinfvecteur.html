@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demi bande inf * vecteur</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            /* Light background color */
+        }
+
+        .container {
+            background-color: #ffffff;
+            /* White background color */
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #007bff;
+            /* Dark color for heading text */
+        }
+
+        .form-group p {
+            color: #212529;
+            /* Dark color for paragraph text */
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            /* Primary button color */
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            /* Darker color on hover */
+            border-color: #0056b3;
+        }
+
+        .mt-2 {
+            margin-top: 8px;
+        }
+        .mb-4 {
+            text-align: center;
+        }
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            /* Red color for error messages */
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            margin-top: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+        }
+
+        #matrixAInputs {
+            margin-top: 20px;
+        }
+
+        #generateButton,
+        #submitButton {
+            margin-top: 20px;
+        }
+
+        #mValue,
+        #result {
+            margin-top: 30px;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Matrice triangulaire inférieure demi-bande * Vecteur</h1>
+
+        <form id="matrixForm" action="/demiinfvecteurapp" method="POST">
+            <div class="form-group text-center">
+                <label for="matrixSize">Donnez la dimension (n) du matrice et du vecteur:</label>
+                <input type="number" class="form-control" id="Size" name="Size" required>
+            </div>
+
+            <div class="form-group">
+                <p>Entrez les éléments de la matrice:</p>
+                <div id="matrixInputs" class="mb-3"></div>
+            </div>
+
+            <div class="form-group">
+                <p>Entrez les éléments du vecteur b:</p>
+                <div id="vectorInputs" class="mb-3"></div>
+            </div>
+            <div class="d-flex justify-content-center mb-2">
+            <button type="button" id="calculateButton" class="btn btn-primary">Calculer</button></div>
+        </form>
+
+        <div id="result" class="mt-4">
+            <!-- Result will be displayed here -->
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Dynamically generate input fields for the matrix and vector based on user input
+            document.getElementById('matrixForm').addEventListener('submit', function (event) {
+                event.preventDefault();  // Prevent the default form submission behavior
+                const matrixSize = parseInt(document.getElementById('Size').value);
+                const matrixInputs = document.getElementById('matrixInputs');
+                const vectorInputs = document.getElementById('vectorInputs');
+    
+                matrixInputs.innerHTML = '';
+                vectorInputs.innerHTML = '';
+    
+                for (let i = 0; i < matrixSize; i++) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'form-row mb-2';
+    
+                    for (let j = 0; j < matrixSize; j++) {
+                        const colDiv = document.createElement('div');
+                        colDiv.className = 'col';
+    
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.className = 'form-control';
+                        input.name = `matrix[${i}][${j}]`;
+                        input.placeholder = `a[${i + 1}][${j + 1}]`;
+                        input.required = true;
+    
+                        colDiv.appendChild(input);
+                        rowDiv.appendChild(colDiv);
+                    }
+    
+                    matrixInputs.appendChild(rowDiv);
+                }
+    
+                for (let i = 0; i < matrixSize; i++) {
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'col';
+    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'form-control';
+                    input.name = `vector[${i}]`;
+                    input.placeholder = `x[${i+1}]`;
+                    input.required = true;
+    
+                    colDiv.appendChild(input);
+                    vectorInputs.appendChild(colDiv);
+                }
+    
+                document.getElementById('result').innerHTML = ''; // Clear previous results
+            });
+    
+            document.getElementById('calculateButton').addEventListener('click', function () {
+                const formData = new FormData(document.getElementById('matrixForm'));
+    
+                fetch('/demiinfvecteurapp', {
+    method: 'POST',
+    body: formData,
+})
+    .then(response => response.json())
+    .then(data => {
+        const resultContainer = document.getElementById('result');
+
+        if (data.error) {
+            resultContainer.innerHTML = `<h3>Error:</h3><p class="text-danger">${data.error}</p>`;
+        } else {
+            // Display the value of m and the result in an HTML table
+            const mValue = data.m;
+            const resultArray = data.result;
+
+            // Create table for result
+            const resultTable = document.createElement('table');
+            resultTable.className = 'table';
+
+            // Check if resultArray is defined
+            if (resultArray) {
+                // Create a table row for the result
+                const resultRow = document.createElement('tr');
+                for (const val of resultArray) {
+                    const resultCell = document.createElement('td');
+                    resultCell.innerText = val.toFixed(2);
+                    resultRow.appendChild(resultCell);
+                }
+                resultTable.appendChild(resultRow);
+            }
+
+            // Display the value of m before the table
+            const mValueParagraph = document.createElement('p');
+            mValueParagraph.innerHTML = `<h3>Valeur de m: ${mValue}</h3>`;
+            resultContainer.appendChild(mValueParagraph);
+
+            resultContainer.appendChild(createTableSection('Résultat:', resultTable)); // Append the table to the result container
+        }
+    })
+    .catch(error => {
+        document.getElementById('result').innerHTML = `<h3>Error:</h3><p class="text-danger">${JSON.stringify(error)}</p>`;
+    });
+
+
+// Helper function to create a table section (header + table)
+function createTableSection(headerText, table) {
+    const section = document.createElement('div');
+
+    // Create header
+    const header = document.createElement('h3');
+    header.innerText = headerText;
+    section.appendChild(header);
+
+    // Append table
+    section.appendChild(table);
+
+    return section;
+}
+
+
+            });
+        });
+    </script>
+    
+    
+</body>
+</html>
